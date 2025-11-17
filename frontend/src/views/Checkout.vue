@@ -63,22 +63,22 @@
                     <p>Quantity: {{ item.quantity }}</p>
                   </div>
                 </div>
-                <p class="item-price">${{ (item.price * item.quantity).toFixed(2) }}</p>
+                <p class="item-price">₹{{ formatPrice(item.price * item.quantity) }}</p>
               </div>
             </div>
             
             <div class="order-totals">
               <div class="total-row">
                 <span>Subtotal:</span>
-                <span>${{ subtotal.toFixed(2) }}</span>
+                <span>₹{{ formatPrice(subtotal) }}</span>
               </div>
               <div class="total-row">
                 <span>Shipping:</span>
-                <span>${{ shipping.toFixed(2) }}</span>
+                <span>₹{{ formatPrice(shipping) }}</span>
               </div>
               <div class="total-row final">
                 <span>Total:</span>
-                <span>${{ total.toFixed(2) }}</span>
+                <span>₹{{ formatPrice(total) }}</span>
               </div>
             </div>
             
@@ -107,13 +107,17 @@ export default {
     const router = useRouter()
     const cartItems = ref([])
     const submitting = ref(false)
-    const shipping = ref(10.00)
+    const shipping = ref(100.00) // Shipping in INR
     
     const formData = ref({
       customer_name: '',
       customer_email: '',
       address: ''
     })
+    
+    const formatPrice = (price) => {
+      return new Intl.NumberFormat('en-IN').format(price.toFixed(0))
+    }
     
     const subtotal = computed(() => {
       return cartItems.value.reduce((sum, item) => sum + (item.price * item.quantity), 0)
@@ -181,6 +185,7 @@ export default {
       subtotal,
       total,
       submitting,
+      formatPrice,
       submitOrder
     }
   }

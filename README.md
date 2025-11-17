@@ -19,7 +19,7 @@ TRIBAL_TIDES/
 │   ├── models.py           # SQLAlchemy database models
 │   ├── requirements.txt    # Python dependencies
 │   ├── seed_data.py        # Database seeding script
-│   ├── database.db         # SQLite database (created on first run)
+│   ├── database.sqlite3    # SQLite database (created on first run)
 │   └── dist/               # Built Vue frontend (created by npm run build)
 │
 ├── frontend/
@@ -274,7 +274,7 @@ If you prefer using the `render.yaml` file:
 
 ### Backend Issues
 - Ensure Flask is installed: `pip install Flask Flask-SQLAlchemy Flask-CORS gunicorn`
-- If database errors occur, delete `database.db` and run `seed_data.py` again
+- If database errors occur, delete `database.sqlite3` and run `seed_data.py` again
 - Check that port 5000 is not in use (local development)
 - For Render: Ensure `gunicorn` is in `requirements.txt`
 

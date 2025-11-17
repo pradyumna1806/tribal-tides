@@ -6,8 +6,10 @@ from datetime import datetime
 
 # Configure Flask to serve the built Vue app
 app = Flask(__name__, static_folder="dist", static_url_path="")
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.sqlite3'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+STATIC_IMAGES_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'static', 'images'))
 
 # Enable CORS - allow all origins in production, specific origins in dev
 # In production (Render), we serve from the same domain, so CORS is less critical
@@ -186,6 +188,13 @@ def get_categories():
     """Get all product categories"""
     categories = db.session.query(Product.category).distinct().all()
     return jsonify([cat[0] for cat in categories])
+
+@app.route('/static/images/<path:filename>')
+def serve_static_images(filename):
+    """Serve placeholder product and category images."""
+    if not os.path.isdir(STATIC_IMAGES_ROOT):
+        return jsonify({'error': 'Static images directory missing'}), 404
+    return send_from_directory(STATIC_IMAGES_ROOT, filename)
 
 # Serve Vue app - must be after all API routes
 @app.route("/", defaults={"path": ""})

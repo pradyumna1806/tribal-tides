@@ -5,7 +5,11 @@
         <!-- Image Gallery -->
         <div class="product-images">
           <div class="main-image">
-            <img :src="product.image_url || '/placeholder.jpg'" :alt="product.name" />
+            <img 
+              :src="product.image_url || fallbackImage" 
+              :alt="product.name"
+              @error="handleImageError"
+            />
           </div>
         </div>
         
@@ -13,7 +17,7 @@
         <div class="product-info">
           <h1>{{ product.name }}</h1>
           <p class="product-category">{{ product.category }}</p>
-          <p class="product-price">${{ product.price.toFixed(2) }}</p>
+          <p class="product-price">₹{{ formatPrice(product.price) }}</p>
           
           <div class="product-description">
             <h3>Description</h3>
@@ -87,6 +91,19 @@ export default {
     const recommendedProducts = ref([])
     const selectedSize = ref('')
     const quantity = ref(1)
+    const fallbackImage = 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&h=800&fit=crop&q=80'
+    const imageError = ref(false)
+
+    const formatPrice = (price) => {
+      return new Intl.NumberFormat('en-IN').format(price.toFixed(0))
+    }
+
+    const handleImageError = (event) => {
+      if (!imageError.value) {
+        imageError.value = true
+        event.target.src = fallbackImage
+      }
+    }
 
     const availableSizes = computed(() => {
       if (!product.value || !product.value.sizes) return []
@@ -153,6 +170,10 @@ export default {
       selectedSize,
       quantity,
       availableSizes,
+      fallbackImage,
+      imageError,
+      formatPrice,
+      handleImageError,
       increaseQuantity,
       decreaseQuantity,
       addToCart
@@ -184,9 +205,10 @@ export default {
   width: 100%;
   aspect-ratio: 1;
   overflow: hidden;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  background-color: var(--sandy-beige);
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  background: linear-gradient(135deg, var(--sandy-beige) 0%, var(--turquoise) 100%);
+  border: 2px solid rgba(245, 230, 211, 0.3);
 }
 
 .main-image img {
@@ -295,8 +317,9 @@ export default {
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 2.5rem;
+  padding: 1rem 0;
 }
 
 .loading {

@@ -17,7 +17,7 @@
             <div class="item-info">
               <h3>{{ item.name }}</h3>
               <p v-if="item.size">Size: {{ item.size }}</p>
-              <p class="item-price">${{ item.price.toFixed(2) }}</p>
+              <p class="item-price">₹{{ formatPrice(item.price) }}</p>
             </div>
             <div class="item-quantity">
               <button @click="updateQuantity(index, item.quantity - 1)">-</button>
@@ -25,7 +25,7 @@
               <button @click="updateQuantity(index, item.quantity + 1)">+</button>
             </div>
             <div class="item-total">
-              <p>${{ (item.price * item.quantity).toFixed(2) }}</p>
+              <p>₹{{ formatPrice(item.price * item.quantity) }}</p>
             </div>
             <button @click="removeItem(index)" class="remove-btn">×</button>
           </div>
@@ -35,15 +35,15 @@
           <h3>Order Summary</h3>
           <div class="summary-row">
             <span>Subtotal:</span>
-            <span>${{ subtotal.toFixed(2) }}</span>
+            <span>₹{{ formatPrice(subtotal) }}</span>
           </div>
           <div class="summary-row">
             <span>Shipping:</span>
-            <span>${{ shipping.toFixed(2) }}</span>
+            <span>₹{{ formatPrice(shipping) }}</span>
           </div>
           <div class="summary-row total">
             <span>Total:</span>
-            <span>${{ total.toFixed(2) }}</span>
+            <span>₹{{ formatPrice(total) }}</span>
           </div>
           <router-link to="/checkout" class="btn btn-primary btn-large">
             Proceed to Checkout
@@ -61,7 +61,11 @@ export default {
   name: 'Cart',
   setup() {
     const cartItems = ref([])
-    const shipping = ref(10.00)
+    const shipping = ref(100.00) // Shipping in INR
+
+    const formatPrice = (price) => {
+      return new Intl.NumberFormat('en-IN').format(price.toFixed(0))
+    }
 
     const subtotal = computed(() => {
       return cartItems.value.reduce((sum, item) => sum + (item.price * item.quantity), 0)
@@ -106,6 +110,7 @@ export default {
       shipping,
       subtotal,
       total,
+      formatPrice,
       updateQuantity,
       removeItem
     }

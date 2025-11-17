@@ -77,7 +77,7 @@ If you need to populate the database:
 - Check Render logs for errors
 
 ### API Not Working
-- Verify database exists: `backend/database.db`
+- Verify database exists: `backend/database.sqlite3`
 - Check that tables are created (auto-created on startup)
 - Run `seed_data.py` if database is empty
 
